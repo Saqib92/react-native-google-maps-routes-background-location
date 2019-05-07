@@ -8,7 +8,7 @@
 
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, Alert} from 'react-native';
-import MapView from 'react-native-maps';
+import MapView, { Polyline } from 'react-native-maps';
 import BackgroundGeolocation from '@mauron85/react-native-background-geolocation';
 import MapViewDirections from 'react-native-maps-directions';
 
@@ -17,39 +17,44 @@ export default class App extends Component {
   constructor(props){
     super(props);
     this.state = {
-      markers: [{
-        title: 'hello',
-        coordinates: {
+       routes: [
+        {
           latitude: 24.8654069,
           longitude: 67.0823004
         },
-      },
-      {
-        title: 'avari',
-        coordinates: {
+        {
           latitude: 24.8527251,
           longitude: 67.0301092
-        },  
-      }],
-
-      routes: [{
-        title: 'hello',
-        coordinates: {
-          latitude: 24.8654069,
-          longitude: 67.0823004
+          
         },
-      },
-      {
-        title: 'avari',
-        coordinates: {
-          latitude: 24.8527251,
-          longitude: 67.0301092
-        },  
-      }]
+        {
+          latitude: 24.8169887,
+          longitude: 66.9974108
+        }
+      ]
     }
+
   }
 
   componentDidMount() {
+
+//     let tempArr = [];
+
+//       for(let a = 0; a < this.state.routes.length; a++){
+//         tempArr.push({origin: this.state.routes[a], destination:  this.state.routes[a+1]});
+//       }
+//       console.log('temp arr', tempArr);
+
+//       this.setState({
+//         final : tempArr
+//       }) 
+    
+    
+// setTimeout(()=>{
+//   console.log('final final arr',this.state.final);
+
+// },100)
+
     BackgroundGeolocation.configure({
       desiredAccuracy: BackgroundGeolocation.HIGH_ACCURACY,
       stationaryRadius: 50,
@@ -150,19 +155,6 @@ export default class App extends Component {
       console.log('[INFO] App needs to authorize the http requests');
     });
  
-    // BackgroundGeolocation.checkStatus(status => {
-    //   console.log('[INFO] BackgroundGeolocation service is running', status.isRunning);
-    //   console.log('[INFO] BackgroundGeolocation services enabled', status.locationServicesEnabled);
-    //   console.log('[INFO] BackgroundGeolocation auth status: ' + status.authorization);
- 
-    //   // you don't need to check status before start (this is just the example)
-    //   if (!status.isRunning) {
-    //    BackgroundGeolocation.start(); //triggers start on start event
-    //   }
-    // });
- 
-    // you can also just start without checking for status
-    // BackgroundGeolocation.start();
   }
  
   componentWillUnmount() {
@@ -172,31 +164,44 @@ export default class App extends Component {
 
   render() {
     return (
+
       <MapView
         style={styles.map}
           region={{
-            latitude: 24.946218,
-            longitude: 67.005615,
+            latitude: 24.8654069,
+            longitude: 67.0823004,
             latitudeDelta: 0.01,
             longitudeDelta: 0.01,
           }}>
+          {
+            this.state.routes.map(mark => (
+              <MapView.Marker 
+                coordinate={mark}
+                
+              />
+            ))
+          }
 
-        <MapViewDirections
-          origin={{latitude: 24.8654069, longitude: 67.0823004}}
-          destination={{latitude: 24.8527251,longitude: 67.0301092}}
-          apikey={'AIzaSyBtGPJeKV8bZQuM73Yr97Q_FNKBqEnkDJ4'}
-          strokeWidth={3}
-          strokeColor="hotpink"
-        />
-
-        {this.state.markers.map(marker => (
-            <MapView.Marker 
-              coordinate={marker.coordinates}
-              title={marker.title}
-            />
-          ))}
+          <MapViewDirections
+            origin={
+              {
+                latitude: 24.8654069,
+                longitude: 67.0823004
+              }
+            }
+            destination={
+              {
+                latitude: 24.8527251,
+                longitude: 67.0301092
+              } 
+            }
+            apikey={'AIzaSyBtGPJeKV8bZQuM73Yr97Q_FNKBqEnkDJ4'}
+            strokeWidth={3}
+            strokeColor="#000"
+            waypoints={this.state.routes}
+          />
         </MapView>
-    );
+     );
   }
 }
 
