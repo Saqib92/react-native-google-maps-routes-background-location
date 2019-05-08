@@ -1,6 +1,15 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, Alert,Button, TouchableOpacity, FlatList} from 'react-native';
+import {Platform, StyleSheet, Text, View, Dimensions,Alert,Button, TouchableOpacity, FlatList, Image} from 'react-native';
 import BackgroundGeolocation from '@mauron85/react-native-background-geolocation';
+import  GoogleStaticMap from 'react-native-google-static-map';
+import {
+  StaticGoogleMap,
+  Marker,
+  Path,
+} from 'react-static-google-map';
+
+
+const {height, width} = Dimensions.get('window');
 
 export default class Details extends Component {
 
@@ -24,19 +33,31 @@ render() {
         <Text style={styles.h2text}>
           Visited Locations: 
         </Text>
-          <FlatList
+          <FlatList 
           data={this.state.oldLocations}
           showsVerticalScrollIndicator={false}
-          renderItem={({item}) =>
-          <View style={styles.flatview}>
+          keyExtractor={item => item.id}
+          renderItem={({item,index}) =>
+        <View key={index} style={styles.flatview}>
+            <GoogleStaticMap
+                latitude={item.longitude.toString()}
+                longitude={item.latitude.toString()}
+                zoom={13}
+                size={{ width: 450 , height: 250 }}
+                apiKey={'AIzaSyBtGPJeKV8bZQuM73Yr97Q_FNKBqEnkDJ4'}
+            />
+            
             <Text style={styles.name}>{item.id}</Text>
             <Text style={styles.email}>{item.longitude}</Text>
             <Text style={styles.email}>{item.latitude}</Text>
           </View>
-          }
-          keyExtractor={item => item.id}
+        
+        }
+          
+
         />
       </View>
+    
     );
 }
 }

@@ -11,26 +11,26 @@ import {Platform, StyleSheet, Text, View, Alert,Button, TouchableOpacity, Switch
 import MapView, { Polyline } from 'react-native-maps';
 import BackgroundGeolocation from '@mauron85/react-native-background-geolocation';
 import MapViewDirections from 'react-native-maps-directions';
-import ToggleSwitch from 'toggle-switch-react-native';
+import Icon from 'react-native-ionicons'
 
 export default class MapPage extends Component {
   static navigationOptions = ({ navigation }) => {
     const { params = {} } = navigation.state;
     return {
-      headerTitle: 'Tracking',
-      headerStyle:{algnItems: 'center'},
+      headerStyle:{headerStyle: 'center'},
       headerLeft:(
-       <TouchableOpacity onPress={this._onPressButton} style={{backgroundColor: 'skyblue', padding: 10, margin: 10}}>
+       <TouchableOpacity style={{backgroundColor: 'skyblue', padding: 10, margin: 10}}>
           <Text>Show Details</Text>
         </TouchableOpacity>
-      )
-      ,
+      ),
     headerRight: (
-      <Switch
-         onValueChange = {params.handleStop}
-         value = {params.switch}
-      />
-         
+      <View style={{flexDirection:'row'}}>
+        <Text><Icon name="information-circle" style={{marginRight: 10}} onPress={params.toDetails} /></Text>
+        <Switch
+          onValueChange = {params.handleStop}
+          value = {params.switch}
+        />
+      </View>
     )
     };
   };
@@ -83,6 +83,7 @@ export default class MapPage extends Component {
   componentDidMount() {
     this.props.navigation.setParams({ handleStop: this.stopTracking }); // for header functions
     this.props.navigation.setParams({switch: false})
+    this.props.navigation.setParams({ toDetails: this.toDetails }); // for header functions
 
     BackgroundGeolocation.configure({
       desiredAccuracy: BackgroundGeolocation.HIGH_ACCURACY,
@@ -198,9 +199,11 @@ export default class MapPage extends Component {
       })
       BackgroundGeolocation.stop();
     }
-    
-        
-    //this.props.navigation.push('Details')
+
+  }
+
+  toDetails=()=>{
+    this.props.navigation.push('Details')
   }
 
 
