@@ -40,8 +40,8 @@ render() {
           renderItem={({item,index}) =>
         <View key={index} style={styles.flatview}>
             <GoogleStaticMap
-                latitude={item.longitude.toString()}
-                longitude={item.latitude.toString()}
+                latitude={item.latitude.toString()}
+                longitude={item.longitude.toString()}
                 zoom={13}
                 size={{ width: 450 , height: 250 }}
                 apiKey={'AIzaSyBtGPJeKV8bZQuM73Yr97Q_FNKBqEnkDJ4'}
