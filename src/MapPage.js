@@ -12,17 +12,14 @@ import MapView, { Polyline } from 'react-native-maps';
 import BackgroundGeolocation from '@mauron85/react-native-background-geolocation';
 import MapViewDirections from 'react-native-maps-directions';
 import Icon from 'react-native-ionicons'
+import DeviceInfo from 'react-native-device-info';
 
 export default class MapPage extends Component {
   static navigationOptions = ({ navigation }) => {
     const { params = {} } = navigation.state;
     return {
       headerStyle:{headerStyle: 'center'},
-      headerLeft:(
-       <TouchableOpacity style={{backgroundColor: 'skyblue', padding: 10, margin: 10}}>
-          <Text>Show Details</Text>
-        </TouchableOpacity>
-      ),
+      title: 'Tracking',
     headerRight: (
       <View style={{flexDirection:'row'}}>
         <Text><Icon name="information-circle" style={{marginRight: 10}} onPress={params.toDetails} /></Text>
@@ -50,7 +47,11 @@ export default class MapPage extends Component {
 
   }
 
-
+getDeviceInfo(){
+  DeviceInfo.getMACAddress().then(mac => {
+      console.log(mac);
+  });
+}
   myCurrentLocation = ()=>{
     BackgroundGeolocation.getCurrentLocation((currentLocation)=>{
       console.log('My current location', currentLocation);
@@ -84,6 +85,7 @@ export default class MapPage extends Component {
     this.props.navigation.setParams({ handleStop: this.stopTracking }); // for header functions
     this.props.navigation.setParams({switch: false})
     this.props.navigation.setParams({ toDetails: this.toDetails }); // for header functions
+    this.getDeviceInfo();
 
     BackgroundGeolocation.configure({
       desiredAccuracy: BackgroundGeolocation.HIGH_ACCURACY,

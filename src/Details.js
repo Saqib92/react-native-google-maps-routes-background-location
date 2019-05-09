@@ -7,6 +7,8 @@ import {
   Marker,
   Path,
 } from 'react-static-google-map';
+//import Geocoder from 'react-native-geocoding';
+import Geocoder from 'react-native-geocoder';
 
 
 const {height, width} = Dimensions.get('window');
@@ -20,13 +22,28 @@ export default class Details extends Component {
         }
     }
 componentDidMount(){
+  //Geocoder.init('AIzaSyBtGPJeKV8bZQuM73Yr97Q_FNKBqEnkDJ4'); // use a valid API key
     BackgroundGeolocation.getLocations((lo)=>{
         this.setState({
             oldLocations: lo
-        })
+        }) 
         console.log('asd',this.state.oldLocations);
     })
 }
+
+ getAddress(lat, lng){
+
+ return Geocoder.geocodePosition({lat: lat, lng: lng}).then(res => {
+      // res is an Array of geocoding object (see below)
+      console.log(res);
+      return res[0].formattedAddress;
+  })
+  .catch(err => console.log(err))
+
+
+}
+
+ 
 render() {
     return (
         <View style={styles.container} >
@@ -48,8 +65,9 @@ render() {
             />
             
             <Text style={styles.name}>{item.id}</Text>
-            <Text style={styles.email}>{item.longitude}</Text>
             <Text style={styles.email}>{item.latitude}</Text>
+            <Text style={styles.email}>{item.longitude}</Text>
+            {/* <Text style={styles.email}>{this.getAddress(item.latitude, item.longitude).then((val)=>{console.log(val)})}</Text> */}
           </View>
         
         }
