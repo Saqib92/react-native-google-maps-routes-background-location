@@ -2,23 +2,18 @@ import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, Dimensions,Alert,Button, TouchableOpacity, FlatList, Image} from 'react-native';
 import BackgroundGeolocation from '@mauron85/react-native-background-geolocation';
 import  GoogleStaticMap from 'react-native-google-static-map';
-import {
-  StaticGoogleMap,
-  Marker,
-  Path,
-} from 'react-static-google-map';
-//import Geocoder from 'react-native-geocoding';
 import Geocoder from 'react-native-geocoder';
-
-
-const {height, width} = Dimensions.get('window');
+import Dialog, { DialogContent } from 'react-native-popup-dialog';
 
 export default class Details extends Component {
 
     constructor(props){
         super(props);
         this.state = {
-            oldLocations: []
+            oldLocations: [],
+            dialog: false,
+            address: '',
+            addData: ''
         }
     }
 componentDidMount(){
@@ -31,22 +26,44 @@ componentDidMount(){
     })
 }
 
- getAddress(lat, lng){
-
- return Geocoder.geocodePosition({lat: lat, lng: lng}).then(res => {
-      // res is an Array of geocoding object (see below)
-      console.log(res);
-      return res[0].formattedAddress;
-  })
-  .catch(err => console.log(err))
+ getAddress = (lat, lng, item)=>{
+   console.log('clicked')
+    this.setState({
+      dialog: true,
+      addData: item
+    })
+      Geocoder.geocodePosition({lat: lat, lng: lng}).then(res => {
+          // res is an Array of geocoding object (see below)
+          console.log(res);
+          this.setState({
+            address: res[0].formattedAddress
+          }) 
+      })
+      .catch(err => console.log(err))
 
 
 }
+
 
  
 render() {
     return (
         <View style={styles.container} >
+        <Dialog
+        style={{padding: 10}}
+          visible={this.state.dialog}
+          onTouchOutside={() => {
+            this.setState({ dialog: false });
+          }}
+        >
+          <DialogContent style={{padding: 10}}>
+            
+            <Text style={styles.name}>Id: {this.state.addData.id}</Text>
+            <Text style={styles.data}>Latitude: {this.state.addData.latitude}</Text>
+            <Text style={styles.data}>Longitude: {this.state.addData.longitude}</Text>
+            <Text style={styles.data}>Address: {this.state.address}</Text>
+          </DialogContent>
+        </Dialog>
         <Text style={styles.h2text}>
           Visited Locations: 
         </Text>
@@ -64,18 +81,19 @@ render() {
                 apiKey={'AIzaSyBtGPJeKV8bZQuM73Yr97Q_FNKBqEnkDJ4'}
             />
             
-            <Text style={styles.name}>{item.id}</Text>
-            <Text style={styles.email}>{item.latitude}</Text>
-            <Text style={styles.email}>{item.longitude}</Text>
-            {/* <Text style={styles.email}>{this.getAddress(item.latitude, item.longitude).then((val)=>{console.log(val)})}</Text> */}
+            
+            <TouchableOpacity style={styles.email} onPress={()=>{this.getAddress(item.latitude, item.longitude, item) }}>
+              <Text>Get Details</Text>
+            </TouchableOpacity>
           </View>
         
         }
           
 
         />
+          
       </View>
-    
+        
     );
 }
 }
@@ -103,7 +121,14 @@ const styles = StyleSheet.create({
       fontSize: 18
     },
     email: {
-      color: 'red'
+      color: 'red',
+      backgroundColor: 'skyblue',
+      alignItems: 'center',
+      padding: 10,
+      margin: 10
+    },
+    data:{
+      fontSize: 16
     }
     
   });

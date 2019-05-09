@@ -91,11 +91,11 @@ getDeviceInfo(){
       desiredAccuracy: BackgroundGeolocation.HIGH_ACCURACY,
       stationaryRadius: 50,
       distanceFilter: 50,
-      notificationsEnabled: false,
-      debug: true,
+      notificationsEnabled: true,
+      debug: false,
       startOnBoot: true,
       stopOnTerminate: false,
-      locationProvider: BackgroundGeolocation.DISTANCE_FILTER_PROVIDER,
+      locationProvider: BackgroundGeolocation.RAW_PROVIDER,
       interval: 5000,
       fastestInterval: 300,
       activitiesInterval: 5000,
@@ -188,6 +188,7 @@ getDeviceInfo(){
     BackgroundGeolocation.removeAllListeners();
   }
   stopTracking=()=>{
+    this.myCurrentLocation();
     if(this.state.switch == false){
       this.props.navigation.setParams({switch: true})
       this.setState({
@@ -247,7 +248,7 @@ getDeviceInfo(){
         </MapView>
      );
   }
-}
+} 
 
 const styles = StyleSheet.create({
   map:{
